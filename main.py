@@ -1,6 +1,8 @@
 from fastapi import FastAPI , Path,Query
 from typing import Optional
 from pydantic import BaseModel
+from api.users import router
+
 
 app = FastAPI(
     title="FastAPI LMS",
@@ -12,27 +14,9 @@ app = FastAPI(
     },
 )
 
-class User(BaseModel):
-    name: str
-    email: str
-
-users=[]
-@app.get("/users")
-def read_users():
-    return users
+app.include_router(router)
 
 
-@app.post("/users")
-def create_user(user: User):
-    users.append(user)
-    return "success"
-
-@app.get("/users/{id}")
-def read_user(id: int = Path(..., description="The ID of the user to retrieve"),
-              isactive: Optional[bool] = Query(None, description="Whether the user is active"),
-              email:str = Query(..., description="The email of the user")
-              ):
-    return {"id":users[id],"isactive":isactive,"email":users[id].email}
 
 
 
